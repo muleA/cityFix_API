@@ -18,7 +18,22 @@ async function getApp() {
       .addTag('city-fix')
       .build();
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('/api/docs', app, document);
+
+    // Custom setup for better Vercel compatibility
+    SwaggerModule.setup('api/docs', app, document, {
+      customSiteTitle: 'City Fix API Docs',
+      swaggerOptions: {
+        persistAuthorization: true,
+        deepLinking: false,
+      },
+      customfavIcon: '/api/docs/favicon.ico',
+      customCssUrl:
+        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.10.3/swagger-ui.min.css',
+      customJs: [
+        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.10.3/swagger-ui-bundle.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.10.3/swagger-ui-standalone-preset.js',
+      ],
+    });
 
     cachedApp = app;
   }
@@ -26,20 +41,12 @@ async function getApp() {
 }
 
 export default async function handler(req: Request, res: Response) {
-  if (req.url?.startsWith('/api/docs') || req.url?.startsWith('/docs-json')) {
-    const app = await getApp();
-    await app.init();
+  const app = await getApp();
+  await app.init();
 
-    // Handle the request
-    const expressApp = app.getHttpAdapter().getInstance();
-    expressApp(req, res);
-  } else {
-    // For other routes, you might want to handle them differently
-    const app = await getApp();
-    await app.init();
-    const expressApp = app.getHttpAdapter().getInstance();
-    expressApp(req, res);
-  }
+  // Handle the request
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp(req, res);
 }
 
 // Keep the standalone server for local development
@@ -55,7 +62,22 @@ if (require.main === module) {
       .addTag('city-fix')
       .build();
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('/api/docs', app, document);
+
+    // Custom setup for better Vercel compatibility
+    SwaggerModule.setup('api/docs', app, document, {
+      customSiteTitle: 'City Fix API Docs',
+      swaggerOptions: {
+        persistAuthorization: true,
+        deepLinking: false,
+      },
+      customfavIcon: '/api/docs/favicon.ico',
+      customCssUrl:
+        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.10.3/swagger-ui.min.css',
+      customJs: [
+        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.10.3/swagger-ui-bundle.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.10.3/swagger-ui-standalone-preset.js',
+      ],
+    });
 
     await app.listen(process.env.PORT ?? 3000);
   }
